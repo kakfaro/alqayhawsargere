@@ -1,170 +1,187 @@
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پەڕەی ڕۆمانسی</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>یادگارییەکانمان</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    body {
+      background-color: #0b0b0f;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-        /* کارپێکەری دەنگەکە */
-        audio {
-            display: none;
-        }
+    .container {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      overflow: hidden;
+    }
 
-        /* کۆنتێنەری بەشەکان */
-        .container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    /* شاردنەوەی بەشی دەنگ */
+    audio {
+      display: none;
+    }
 
-        /* بەشی ۱: ڤیدیۆکەی یەکەم */
-        #video-stage {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 3;
-            transition: opacity 1s ease-in-out;
-        }
+    /* ستاپ و ئۆپاسیتی بۆ بەشەکان */
+    .step {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1.5s ease-in-out, visibility 1.5s;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-        /* بەشی ۲: وێنەی دووەم بە ئەنیبەیشن */
-        #image1-stage {
-            position: absolute;
-            max-width: 90%;
-            max-height: 80%;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
-            opacity: 0;
-            transform: scale(0.5) rotate(-10deg);
-            z-index: 2;
-            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+    .step.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        #image1-stage.animate {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
+    /* هەنگاوی 1: ڤیدیۆ */
+    #step1 video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-        /* بەشی ۳: وێنەی کۆتایی و دەقەکە */
-        #final-stage {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            z-index: 1;
-            transition: opacity 1.5s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-        }
+    /* هەنگاوی 2: وێنەی دووەم بە ئینیمەی شن */
+    #step2 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: pulseZoom 5s infinite alternate ease-in-out;
+    }
 
-        #final-stage.show {
-            opacity: 1;
-        }
+    @keyframes pulseZoom {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.1);
+      }
+    }
 
-        .bg-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
+    /* هەنگاوی 3: وێنەی کۆتایی و دەق */
+    #step3 {
+      justify-content: flex-end;
+    }
 
-        /* چینی تاریککردن بۆ باشتر دیاربوونی دەقەکە */
-        .overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
-            z-index: 0;
-        }
+    #step3 img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
 
-        .romantic-text {
-            position: relative;
-            z-index: 1;
-            color: #ffffff;
-            font-size: 1.4rem;
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-            font-weight: bold;
-        }
-    </style>
+    .overlay-text {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 40px 20px 50px 20px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+      text-align: center;
+    }
+
+    .overlay-text p {
+      font-size: 1.25rem;
+      line-height: 1.8;
+      color: #f3e5f5;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      font-weight: 500;
+    }
+
+    /* دوگمەی دەستپێکردنی دەنگ بۆ ئەگەر براوسەر ڕێگەی نەدا */
+    .start-btn {
+      position: absolute;
+      z-index: 10;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-    <audio id="bg-audio" autoplay loop>
-        <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/v1c044g50000dahjh1nog65n3ivibs60.mp4" type="audio/mp4">
-    </audio>
+  <div class="container" id="app">
+    <audio id="bg-music" src="https://github.com/kakfaro/alqayhawsargere/raw/main/v1c044g50000dahjh1nog65n3ivibs60.mov" loop preload="auto"></audio>
 
-    <div class="container">
-        <video id="video-stage" autoplay muted playsinline>
-            <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/b_please_make_vedio_An.mp4" type="video/mp4">
-        </video>
-
-        <img id="image1-stage" src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0013.jpeg" alt="وێنەی ئەنیمەیشن">
-
-        <div id="final-stage">
-            <img class="bg-image" src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0011.jpeg" alt="وێنەی کۆتایی">
-            <div class="overlay"></div>
-            <p class="romantic-text">
-                "تۆ قەشەنگترین ڕووداوی ژیانی منیت، <br>لەگەڵ تۆدا هەموو چرکەیەک مانا بە ژیان دەبەخشێت..."
-            </p>
-        </div>
+    <div class="step active" id="step1">
+      <video id="intro-video" src="https://github.com/kakfaro/alqayhawsargere/raw/main/b_please_make_vedio_An.mp4" autoplay muted playsinline></video>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const audio = document.getElementById("bg-audio");
-            const videoStage = document.getElementById("video-stage");
-            const image1Stage = document.getElementById("image1-stage");
-            const finalStage = document.getElementById("final-stage");
+    <div class="step" id="step2">
+      <img src="https://github.com/kakfaro/alqayhawsargere/raw/main/IMG_0013.jpeg" alt="وێنەی دووەم">
+    </div>
 
-            // هەوڵدان بۆ لێدانی دەنگ
-            audio.play().catch(() => {
-                // ئەگەر وێبگەڕ ڕێگەی نەدا خۆکار لێبدرێت، بە لێدانی یەکەم کلیل دەستپێدەکات
-                document.body.addEventListener('click', () => audio.play(), { once: true });
-            });
+    <div class="step" id="step3">
+      <img src="https://github.com/kakfaro/alqayhawsargere/raw/main/IMG_0011.jpeg" alt="وێنەی کۆتایی">
+      <div class="overlay-text">
+        <p>تۆ جوانترین دیاری بەخشراوی ژیانمی، لەگەڵ تۆدا هەموو چرکەیەک دەبێتە یادگارییەکی نەمر...</p>
+      </div>
+    </div>
+  </div>
 
-            // دوای ۵ چرکە: شاردنەوەی ڤیدیۆ و نیشاندانی وێنەی ۲ بە ئەنیمەیشن
-            setTimeout(() => {
-                videoStage.style.opacity = '0';
-                setTimeout(() => { videoStage.style.display = 'none'; }, 1000);
-                
-                image1Stage.classList.add('animate');
-            }, 5000);
+  <script>
+    const music = document.getElementById('bg-music');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
 
-            // دوای ۱۰ چرکە (۵ چرکەی ڤیدیۆ + ۵ چرکەی وێنەی دووەم): چوونی بۆ قۆناغی کۆتایی
-            setTimeout(() => {
-                image1Stage.style.opacity = '0';
-                setTimeout(() => { image1Stage.style.display = 'none'; }, 1000);
+    // لێدانی دەنگ لەگەڵ یەکەم کلیک/دەستپێکدا (بۆ تێپەڕاندنی یاسای Autoplayی براوسەرەکان)
+    function startAudio() {
+      music.play().catch(() => {});
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('touchstart', startAudio);
+    }
+    document.addEventListener('click', startAudio);
+    document.addEventListener('touchstart', startAudio);
 
-                finalStage.classList.add('show');
-            }, 10000);
-        });
-    </script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // هەوڵدان بۆ لێدانی ڕاستەوخۆی دەنگ
+      music.play().catch(() => {});
+
+      // دوای 5 چرکە بچۆ بۆ هەنگاوی دووەم
+      setTimeout(() => {
+        step1.classList.remove('active');
+        step2.classList.add('active');
+
+        // دوای 5 چرکەی تر (کۆی گشتی 10 چرکە) بچۆ بۆ هەنگاوی سێیەم
+        setTimeout(() => {
+          step2.classList.remove('active');
+          step3.classList.add('active');
+        }, 5000);
+
+      }, 5000);
+    });
+  </script>
 </body>
 </html>
