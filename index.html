@@ -1,169 +1,170 @@
 <!DOCTYPE html>
 <html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نیشاندانی تایبەت</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پەڕەی ڕۆمانسی</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      background-color: #000;
-      font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden;
-      color: #fff;
-    }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        /* کارپێکەری دەنگەکە */
+        audio {
+            display: none;
+        }
 
-    /* شاردنەوەی سەرەتایی هەموو بەشەکان */
-    .step {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease-in-out;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        /* کۆنتێنەری بەشەکان */
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    /* چالاککردنی بەشەکان */
-    .step.active {
-      opacity: 1;
-      visibility: visible;
-    }
+        /* بەشی ۱: ڤیدیۆکەی یەکەم */
+        #video-stage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 3;
+            transition: opacity 1s ease-in-out;
+        }
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+        /* بەشی ۲: وێنەی دووەم بە ئەنیبەیشن */
+        #image1-stage {
+            position: absolute;
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: scale(0.5) rotate(-10deg);
+            z-index: 2;
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    /* ئەنیمەیشنی وێنەی دووەم */
-    .animated-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      animation: zoomAndRotate 5s linear forwards;
-    }
+        #image1-stage.animate {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
 
-    @keyframes zoomAndRotate {
-      0% {
-        transform: scale(1) rotate(0deg);
-        filter: brightness(1);
-      }
-      50% {
-        transform: scale(1.1) rotate(1deg);
-        filter: brightness(1.2);
-      }
-      100% {
-        transform: scale(1.2) rotate(0deg);
-        filter: brightness(1);
-      }
-    }
+        /* بەشی ۳: وێنەی کۆتایی و دەقەکە */
+        #final-stage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 1.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
 
-    /* شێوازی قۆناغی کۆتایی */
-    .final-step {
-      flex-direction: column;
-      justify-content: flex-end;
-      text-align: center;
-    }
+        #final-stage.show {
+            opacity: 1;
+        }
 
-    .final-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 1;
-    }
+        .bg-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
 
-    .overlay-text {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      padding: 30px 20px;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: #ffe6eb;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-  </style>
+        /* چینی تاریککردن بۆ باشتر دیاربوونی دەقەکە */
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+            z-index: 0;
+        }
+
+        .romantic-text {
+            position: relative;
+            z-index: 1;
+            color: #ffffff;
+            font-size: 1.4rem;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="step active" id="step1">
-      <video id="vid1" autoplay muted playsinline>
-        <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/v1c044g50000dahjh1nog65n3ivibs60.mp4" type="video/mp4">
-      </video>
+    <audio id="bg-audio" autoplay loop>
+        <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/v1c044g50000dahjh1nog65n3ivibs60.mp4" type="audio/mp4">
+    </audio>
+
+    <div class="container">
+        <video id="video-stage" autoplay muted playsinline>
+            <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/b_please_make_vedio_An.mp4" type="video/mp4">
+        </video>
+
+        <img id="image1-stage" src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0013.jpeg" alt="وێنەی ئەنیمەیشن">
+
+        <div id="final-stage">
+            <img class="bg-image" src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0011.jpeg" alt="وێنەی کۆتایی">
+            <div class="overlay"></div>
+            <p class="romantic-text">
+                "تۆ قەشەنگترین ڕووداوی ژیانی منیت، <br>لەگەڵ تۆدا هەموو چرکەیەک مانا بە ژیان دەبەخشێت..."
+            </p>
+        </div>
     </div>
 
-    <div class="step" id="step2">
-      <video id="vid2" muted playsinline>
-        <source src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/b_please_make_vedio_An.mp4" type="video/mp4">
-      </video>
-    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const audio = document.getElementById("bg-audio");
+            const videoStage = document.getElementById("video-stage");
+            const image1Stage = document.getElementById("image1-stage");
+            const finalStage = document.getElementById("final-stage");
 
-    <div class="step" id="step3">
-      <img src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0013.jpeg" class="animated-img" alt="Animation">
-    </div>
+            // هەوڵدان بۆ لێدانی دەنگ
+            audio.play().catch(() => {
+                // ئەگەر وێبگەڕ ڕێگەی نەدا خۆکار لێبدرێت، بە لێدانی یەکەم کلیل دەستپێدەکات
+                document.body.addEventListener('click', () => audio.play(), { once: true });
+            });
 
-    <div class="step final-step" id="step4">
-      <img src="https://raw.githubusercontent.com/kakfaro/alqayhawsargere/main/IMG_0011.jpeg" class="final-bg" alt="Final Image">
-      <div class="overlay-text">
-        تۆ جوانترین دیاری ژیانمی، لەگەڵ تۆدا هەموو چرکەیەک ڕەنگی خۆشەویستی دەگرێت... ❤️
-      </div>
-    </div>
-  </div>
+            // دوای ۵ چرکە: شاردنەوەی ڤیدیۆ و نیشاندانی وێنەی ۲ بە ئەنیمەیشن
+            setTimeout(() => {
+                videoStage.style.opacity = '0';
+                setTimeout(() => { videoStage.style.display = 'none'; }, 1000);
+                
+                image1Stage.classList.add('animate');
+            }, 5000);
 
-  <script>
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const step4 = document.getElementById('step4');
+            // دوای ۱۰ چرکە (۵ چرکەی ڤیدیۆ + ۵ چرکەی وێنەی دووەم): چوونی بۆ قۆناغی کۆتایی
+            setTimeout(() => {
+                image1Stage.style.opacity = '0';
+                setTimeout(() => { image1Stage.style.display = 'none'; }, 1000);
 
-    const vid1 = document.getElementById('vid1');
-    const vid2 = document.getElementById('vid2');
-
-    // دوای 5 چرکە لە دەستپێکردن: ڕاهێنانی قۆناغی دووەم
-    setTimeout(() => {
-      step1.classList.remove('active');
-      step2.classList.add('active');
-      vid2.play();
-    }, 5000);
-
-    // دوای 10 چرکە (5 چرکەی ڤیدیۆی دووەم): ڕاهێنانی وێنەی ئەنیمەیشن
-    setTimeout(() => {
-      step2.classList.remove('active');
-      step3.classList.add('active');
-    }, 10000);
-
-    // دوای 15 چرکە (5 چرکەی وێنەی ئەنیمەیشن): چوون بۆ وێنەی کۆتایی و دەق
-    setTimeout(() => {
-      step3.classList.remove('active');
-      step4.classList.add('active');
-    }, 15000);
-  </script>
-
+                finalStage.classList.add('show');
+            }, 10000);
+        });
+    </script>
 </body>
 </html>
